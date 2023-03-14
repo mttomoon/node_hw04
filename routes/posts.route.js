@@ -1,6 +1,6 @@
 const express = require('express');
 const { Op } = require("sequelize");
-const { Users, Posts } = require("../models");
+const { Users, Posts, Comments } = require("../models");
 const authMiddleware = require("../middlewares/auth-middleware.js");
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.post("/posts", authMiddleware, async(req, res)=>{
   }
 });
 
-//게시글 전체목록 조회
+//게시글 전체목록 조회 + 🟩좋아요 갯수도 조회되도록!🟩
 router.get("/posts", async (req, res) => {
     try {
       const posts = await Posts.findAll({
@@ -105,5 +105,7 @@ router.delete("/posts/:postId", authMiddleware, async(req, res) =>{
       res.status(404).json({errorMessage: "게시글 삭제에 실패하였습니다."});
     }
 });
+
+
 
 module.exports = router;

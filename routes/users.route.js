@@ -3,9 +3,11 @@ const { Op } = require("sequelize");
 const { Users } = require("../models");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+require('dotenv').config();
 
 //회원가입
 router.post("/users", async (req, res)=>{
+    try {
     const {email, nickname, password, confirmPassword} = req.body;
     const existUser = await Users.findOne({ where: {[Op.or]:[{email},{nickname}]}});
     const nicknamePattern = /^[a-zA-Z0-9]{3,}$/;
@@ -27,7 +29,6 @@ router.post("/users", async (req, res)=>{
         return;
       } 
     
-    try {
         await Users.create({ email, nickname, password });
         return res.status(201).json({success:true, message: "회원 가입에 성공하였습니다." });
     } catch (error) {
@@ -49,7 +50,7 @@ router.post("/users/login", async(req, res)=>{
             return;
         }
 
-        const token = jwt.sign({userId: user.userId}, "custmized_secret_key");
+        const token = jwt.sign({userId: user.userId}, process.env.PRIVATE_KEY);
         res.cookie("authorization", `Bearer ${token}`);
         return res.status(200).json({message: "로그인에 성공했습니다."});
 } catch (error) {

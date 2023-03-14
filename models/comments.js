@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Posts extends Model {
+  class Comments extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -15,19 +15,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'UserId',
       });
 
-      this.hasMany(models.Comments, {
-        targetKey: 'postId', 
-        foreignKey: 'PostId',
-      });
-
-      this.hasMany(models.Likes, {
+      this.belongsTo(models.Posts,{
         targetKey: 'postId', 
         foreignKey: 'PostId',
       });
     }
   }
-  Posts.init({
-    postId: {
+  Comments.init({
+    commentId: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
@@ -37,9 +32,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.INTEGER,
     },
-    title: {
+    PostId: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.INTEGER,
     },
     content: {
       allowNull: false,
@@ -57,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Posts',
+    modelName: 'Comments',
   });
-  return Posts;
+  return Comments;
 };
